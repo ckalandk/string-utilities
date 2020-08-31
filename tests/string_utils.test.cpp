@@ -27,23 +27,54 @@ TEST_CASE("capitalize a string", "[upper]")
     }
 }
 
-TEST_CASE("Stripping white characters for the beginning of a string",
-          "[lstrip]")
+TEST_CASE("Strip substring from a string", "[strip]")
+{
+    std::string s{ "+,$hello world+,$" };
+
+    SECTION("stripping from the left")
+    {
+        REQUIRE(lstrip(s, "+,$") == "hello world+,$");
+    }
+
+    SECTION("stripping from the right")
+    {
+        REQUIRE(rstrip(s, "+,$") == "+,$hello world");
+    }
+
+    SECTION("stripping from both ends")
+    {
+        REQUIRE(strip(s, "+,$") == "hello world");
+    }
+
+    SECTION("stripping a bigger string yield the same string")
+    {
+        REQUIRE(lstrip(s, "the brown fox jumped over the lazy dof") == s);
+    }
+
+    SECTION("stripping a string not contained in the subject string")
+    {
+        REQUIRE(lstrip(s, "buzzy") == s);
+        REQUIRE(rstrip(s, "buzzy") == s);
+        REQUIRE(strip(s, "buzzy") == s);
+    }
+}
+
+TEST_CASE("Stripping any characters for the beginning of a string", "[lstrip]")
 {
     std::string s{ "\r\t\n hello world" };
-    REQUIRE(lstrip(s) == "hello world");
+    REQUIRE(lstrip_any_of(s) == "hello world");
 }
 
 TEST_CASE("Stripping white characters for the end of a string", "[rstrip]")
 {
     std::string s{ "hello world\r\n\t " };
-    REQUIRE(rstrip(s) == "hello world");
+    REQUIRE(rstrip_any_of(s) == "hello world");
 }
 
 TEST_CASE("Stripping white characters for both ends of a string", "[strip]")
 {
     std::string s{ "\t\n\r   \r\t\t hello world\r\n\t    \r\n" };
-    REQUIRE(strip(s) == "hello world");
+    REQUIRE(strip_any_of(s) == "hello world");
 }
 
 TEST_CASE("Replace all occurence of substring in a string with other",
@@ -144,6 +175,4 @@ TEST_CASE("splitting a string", "[split]")
         REQUIRE(v == std::vector<std::string_view>{ "", "" });
     }
 }
-
-
 

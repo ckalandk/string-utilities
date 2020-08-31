@@ -49,6 +49,18 @@ find_str(std::basic_string_view<CharT, Traits> text,
     return std::basic_string_view<CharT, Traits>::npos;
 }
 
+constexpr bool starts_with(std::string_view text, std::string_view prefix)
+{
+    return (text.size() >= prefix.size()) &&
+           (text.substr(0, prefix.size()) == prefix);
+}
+
+constexpr bool ends_with(std::string_view text, std::string_view suffix)
+{
+   return (text.size() >= suffix.size()) &&
+          (text.substr(text.size() - suffix.size()) == suffix); 
+}
+
 inline std::string upper(std::string str)
 {
     std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
@@ -75,7 +87,7 @@ inline std::string capitalize(std::string str)
 inline std::string lstrip(std::string_view text,
                           std::string_view prefix)
 {
-    if(text.starts_with(prefix))
+    if(starts_with(text, prefix))
         text.remove_prefix(prefix.size());
     return std::string(text);
 }
@@ -83,7 +95,7 @@ inline std::string lstrip(std::string_view text,
 inline std::string rstrip(std::string_view text,
                           std::string_view suffix)
 {
-    if(text.ends_with(suffix))
+    if(ends_with(text, suffix))
         text.remove_suffix(suffix.size());
     return std::string(text);
 }
@@ -94,19 +106,26 @@ inline std::string strip(std::string_view text,
     return rstrip(lstrip(text, ends), ends);
 }
 
-
-inline std::string lstrip_any_of(std::string_view text, std::string_view chars = " \n\r\t")
+inline std::string lstrip_any_of(std::string_view text,
+                                 std::string_view chars = " \n\r\t")
 {
-   auto const pos = text.find_first_not_of(chars);
-   text.remove_prefix(std::min(text.size(), pos));
-   return std::string(text);
+    auto const pos = text.find_first_not_of(chars);
+    text.remove_prefix(std::min(text.size(), pos));
+    return std::string(text);
 }
 
-inline std::string rstrip_any_of(std::string_view text, std::string_view chars = " \n\r\t")
+inline std::string rstrip_any_of(std::string_view text,
+                                 std::string_view chars = " \n\r\t")
 {
-   auto const pos = text.find_last_not_of(chars);
-   text.remove_suffix(std::min(text.size(), text.size() - pos - 1));
-   return std::string(text);
+    auto const pos = text.find_last_not_of(chars);
+    text.remove_suffix(std::min(text.size(), text.size() - pos - 1));
+    return std::string(text);
+}
+
+inline std::string strip_any_of(std::string_view text,
+                                std::string_view chars = " \n\r\t")
+{
+    return rstrip_any_of(lstrip_any_of(text, chars), chars);
 }
 
 inline void replace(std::string& str,
