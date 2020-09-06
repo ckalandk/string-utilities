@@ -8,47 +8,6 @@
 #include <variant>
 
 namespace strutil {
-template<typename CharT, typename Traits>
-inline constexpr size_t rfind_char(std::basic_string_view<CharT, Traits> text,
-                                   CharT c,
-                                   size_t skip)
-{
-    for (int i = text.size() - skip - 1; i >= 0; --i) {
-        if (Traits::eq(text[i], c))
-            return i;
-    }
-    return std::basic_string_view<CharT, Traits>::npos;
-}
-
-template<typename CharT, typename Traits>
-inline constexpr typename std::basic_string_view<CharT, Traits>::size_type
-find_str(std::basic_string_view<CharT, Traits> text,
-         std::basic_string_view<CharT, Traits> pattern,
-         typename std::basic_string_view<CharT, Traits>::size_type pos = 0)
-{
-    auto const tsize = text.size();
-    auto const psize = pattern.size();
-    if (psize > tsize)
-        return std::string_view::npos;
-    if (pattern.size() == 1)
-        return text.find(pattern[0], pos);
-    pos += (psize - 1);
-    for (; pos < tsize;) {
-        int ind = psize - 1;
-        while (ind >= 0 && Traits::eq(text[pos], pattern[ind])) {
-            --ind;
-            --pos;
-        }
-        if (ind == -1)
-            return pos + 1;
-        else {
-            auto const __pos = rfind_char(pattern, text[pos], 1);
-            pos += (psize - (int)__pos - 1);
-        }
-    }
-    return std::basic_string_view<CharT, Traits>::npos;
-}
-
 constexpr bool starts_with(std::string_view text, std::string_view prefix)
 {
     return (text.size() >= prefix.size()) &&
