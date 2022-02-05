@@ -154,12 +154,17 @@ struct split_iterator
         return old;
     }
 
+    bool operator==(Self const&) const noexcept
+    {
+        return view_.data() == nullptr;
+    }
+
     bool operator!=(Self const&) const noexcept
     {
         return view_.data() != nullptr;
     }
-
-  public:
+    
+  private:
     Split const* split_;
     value_type view_;
 
