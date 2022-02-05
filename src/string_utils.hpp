@@ -169,14 +169,17 @@ struct split_iterator
         if (view_.data() == nullptr)
             return;
         using size_type = typename value_type::size_type;
-        auto const text = split_->value();
-        auto const delim = split_->delimiter();
+        auto const& text = split_->value();
+        auto const& delim = split_->delimiter();
         size_type const delim_size = std::max(size_type(1), delim.size());
-        auto const pos_ = (view_.end() - text.begin()) + delim_size;
-        if (pos_ <= text.size()) {
+        auto const pos_ = (view_.data() - text.data()) + view_.size() + delim_size;
+        if (pos_ <= text.size())
+        {
             auto const tpos = std::min(text.find(delim, pos_), text.size());
             view_ = text.substr(pos_, tpos - pos_);
-        } else {
+        }
+        else
+        {
             view_ = value_type(nullptr, 0);
         }
     }
