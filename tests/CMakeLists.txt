@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.16.3)
 
 project(tests)
 
+Include(FetchContent)
+
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.0.1 # or a later release
+)
+
+FetchContent_MakeAvailable(Catch2)
+
 find_package(Catch2 REQUIRED)
 
 add_executable(string-test main.cpp string_utils.test.cpp)
@@ -16,6 +26,10 @@ target_link_libraries(
 string-test
   String::Utilities
 )
+
+target_link_libraries(string-test PRIVATE Catch2::Catch2WithMain)
+
+list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 
 include(CTest)
 enable_testing()
