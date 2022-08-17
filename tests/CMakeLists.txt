@@ -25,7 +25,7 @@ string-test INTERFACE
   String::Utilities
 )
 
-target_link_libraries(string-test PRIVATE Catch2::Catch2)
+target_link_libraries(string-test PRIVATE Catch2::Catch2WithMain)
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
 
