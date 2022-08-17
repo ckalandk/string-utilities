@@ -27,7 +27,7 @@ string-test INTERFACE
 
 target_link_libraries(string-test PRIVATE Catch2::Catch2WithMain)
 
-list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
 
 include(CTest)
 enable_testing()
