@@ -21,7 +21,7 @@ string-test
 )
 
 target_link_libraries(
-string-test
+string-test INTERFACE
   String::Utilities
 )
 
