@@ -201,31 +201,10 @@ struct split
     using value_type     = std::basic_string_view<CharT, Traits>;
 
   private:
+
     using bstring = std::basic_string<CharT, Traits, Alloc>;
 
-    struct Visitor
-    {
-        value_type operator()(bstring const& s)
-        {
-            return { s.c_str(), s.size() };
-        }
-
-        value_type operator()(value_type s)
-        {
-            return s;
-        }
-    };
-
   public:
-    split(CharT const* input, std::basic_string_view<CharT, Traits> delim)
-      : view_(value_type(input))
-      , delim_(delim)
-    {}
-
-    split(CharT* input, value_type delim)
-      : view_(value_type(input))
-      , delim_(delim)
-    {}
 
     split(std::basic_string<CharT, Traits, Alloc> const& input,
           std::basic_string_view<CharT, Traits> delim)
@@ -241,13 +220,16 @@ struct split
 
     split(std::basic_string_view<CharT, Traits> input,
           std::basic_string_view<CharT, Traits> delim)
-      : view_(std::move(input))
+      : view_(input)
       , delim_(delim)
     {}
 
     value_type value() const noexcept
     {
-        return std::visit(Visitor{}, view_);
+        if (std::holds_alternative<bstring>(view_)) {
+            return std::get<bstring>(view_);
+        }
+        return std::get<value_type>(view_);
     }
 
     value_type delimiter() const noexcept
@@ -286,9 +268,6 @@ split(Str, typename Str::value_type const*)
   -> split<typename Str::value_type,
            typename Str::traits_type,
            typename Str::allocator_type>;
-
-template<typename CharT>
-split(CharT const*, CharT const*) -> split<CharT>;
 #endif
 
 } // end namespace strutil
